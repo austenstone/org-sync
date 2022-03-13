@@ -17,8 +17,8 @@ jobs:
         with:
           script: |
             return ['123', '456', '789']
-        outputs:
-          matrix: ${{ steps.matrix.outputs.result }}
+    outputs:
+      matrix: ${{ steps.matrix.outputs.result }}
   
   repo-print:
     needs: repo-matrix
