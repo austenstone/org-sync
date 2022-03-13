@@ -55,7 +55,7 @@ jobs:
       - run: git fetch source
       - run: git merge --allow-unrelated-histories --squash -X theirs source/main
       - run: |
-          for fileName in sync.yml README.md; do
+          for fileName in .github/workflows/sync.yml README.md; do
             git reset HEAD -- $fileName
             git clean -f -q -- $fileName
             echo "Rest $fileName successfull"
