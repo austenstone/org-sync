@@ -32,25 +32,11 @@ jobs:
           github-token: ${{ secrets.GH_TOKEN }}
     outputs:
       repos: ${{ steps.create-arr.outputs.result }}
-  
-  patch:
-    name: Patch
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - run: git format-patch ${{ github.event.before }} --stdout | tee revision.patch
-      - uses: actions/upload-artifact@v2
-        with:
-          name: patch
-          path: revision.patch
 
   sync:
     name: Sync Repository
     needs:
       - repo-arr
-      - patch
     strategy:
       matrix:
         repo: ${{ fromJson(needs.repo-arr.outputs.repos) }}
