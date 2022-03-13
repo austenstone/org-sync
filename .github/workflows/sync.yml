@@ -56,7 +56,7 @@ jobs:
       - name: Dump matrix context
         run: echo '${{ toJSON(matrix) }}'
 
-        
+
       - name: Checkout ${{ github.event.repository.name }} repo
         uses: actions/checkout@v3
         with:
