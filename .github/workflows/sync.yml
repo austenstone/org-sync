@@ -63,7 +63,11 @@ jobs:
         run: git show HEAD > ../revision.patch
       - name: Apply Patch
         working-directory: ${{ matrix.repo }}
-        run: git apply ../revision.patch
+        run: |
+          git apply \
+          --exclude=README.md \
+          --exclude=.git* \
+          ../revision.patch
       - name: Commit
         working-directory: ${{ matrix.repo }}
         run: |
