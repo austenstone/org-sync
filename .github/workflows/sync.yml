@@ -48,6 +48,7 @@ jobs:
         with:
           repository: ${{ github.event.organization.login }}/${{ matrix.repo }}
           path: ${{ github.event.organization.login }}
+          token: ${{ secrets.GH_TOKEN }}
       - run: ls -al
       - run: |
           rsync -avrc --delete \
