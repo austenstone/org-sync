@@ -54,6 +54,7 @@ jobs:
     strategy:
       matrix:
         repo: ${{ fromJson(needs.repo-arr.outputs.repos) }}
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository ${{ matrix.repo }}
