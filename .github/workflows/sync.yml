@@ -38,7 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        fetch-depth: 0
+        with:
+          fetch-depth: 0
       - run: git diff ${{ github.event.before }} ${{ github.event.after }} > revision.patch
       - uses: actions/upload-artifact@v2
         with:
