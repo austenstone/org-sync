@@ -41,10 +41,15 @@ jobs:
     steps:
       - name: Checkout ${{ github.event.repository.name }} repo
         uses: actions/checkout@v3
+        with:
+          path: ${{ github.event.repository.name }}
       - name: Checkout ${{ matrix.repo }} repo
         uses: actions/checkout@v3
         with:
           repository: ${{ github.event.organization.login }}/${{ matrix.repo }}
           path: ${{ github.event.organization.login }}
       - run: ls -al
+      - run: rsync -avrc --delete --exclude=.github $pwd
+      - run: git status
+
       
