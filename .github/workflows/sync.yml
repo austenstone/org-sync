@@ -5,7 +5,6 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
   workflow_dispatch:
 
 jobs:
@@ -34,6 +33,18 @@ jobs:
     outputs:
       repos: ${{ steps.create-arr.outputs.result }}
   
+  patch:
+    name: Patch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        fetch-depth: 0
+      - run: git diff ${{ github.event.before }} ${{ github.event.after }} > revision.patch
+      - uses: actions/upload-artifact@v2
+        with:
+          name: patch
+          path: revision.patch
+
   sync:
     name: Sync Repos
     needs: repo-arr
@@ -42,56 +53,22 @@ jobs:
         repo: ${{ fromJson(needs.repo-arr.outputs.repos) }}
     runs-on: ubuntu-latest
     steps:
-      - name: Dump GitHub context
-        id: github_context_step
-        run: echo '${{ toJSON(github) }}'
-      - name: Dump job context
-        run: echo '${{ toJSON(job) }}'
-      - name: Dump steps context
-        run: echo '${{ toJSON(steps) }}'
-      - name: Dump runner context
-        run: echo '${{ toJSON(runner) }}'
-      - name: Dump strategy context
-        run: echo '${{ toJSON(strategy) }}'
-      - name: Dump matrix context
-        run: echo '${{ toJSON(matrix) }}'
-
-
-      - name: Checkout ${{ github.event.repository.name }} repo
-        uses: actions/checkout@v3
-        with:
-          path: ${{ github.event.repository.name }}
-          fetch-depth: 0
-      - name: Checkout ${{ matrix.repo }} repo
+      - name: Checkout Repository ${{ matrix.repo }}
         uses: actions/checkout@v3
         with:
           repository: ${{ github.event.organization.login }}/${{ matrix.repo }}
-          path: ${{ matrix.repo }}
           token: ${{ secrets.GH_TOKEN }}
-      - run: ls -al
-      # - run: |
-      #     rsync -avrc --delete \
-      #     --exclude=README.md \
-      #     --exclude=.git* \
-      #     ${{ github.event.repository.name }} ${{ matrix.repo }}
-      # - name: Create Patch
-      #   working-directory: ${{ github.event.repository.name }}
-      #   run: git show HEAD > ../revision.patch
-      - name: Create Patch
-        working-directory: ${{ github.event.repository.name }}
-        run: git diff ${{ github.event.before }} ${{ github.event.after }} > ../revision.patch
-      - name: Apply Patch
-        working-directory: ${{ matrix.repo }}
-        run: |
+      - uses: actions/download-artifact@v2
+        with:
+          name: patch
+      - run: |
           git apply \
           --exclude=README.md \
           --exclude=.git* \
-          ../revision.patch
-      - name: Commit
-        working-directory: ${{ matrix.repo }}
-        run: |
+          revision.patch
+      - run: |
           git config --global user.name 'actions-user'
           git config --global user.email 'actions-user@users.noreply.github.com'
-          git add -A
-          git diff-index --quiet HEAD || git commit -am "Organization sync"
-          git push
+      - run: git add -A
+      - run: git diff-index --quiet HEAD || git commit -am "Organization sync"
+      - run: git push
