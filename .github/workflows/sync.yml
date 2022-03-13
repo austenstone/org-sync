@@ -61,9 +61,9 @@ jobs:
         with:
           repository: ${{ github.event.organization.login }}/${{ matrix.repo }}
           token: ${{ secrets.GH_TOKEN }}
-      - uses: actions/download-artifact@v2
-        with:
-          name: patch
+      # - uses: actions/download-artifact@v2
+      #   with:
+      #     name: patch
       # - run: git apply --check --verbose --summary revision.patch
       # - run: git apply --verbose revision.patch
       # - run: git add -A
