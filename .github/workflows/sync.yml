@@ -16,7 +16,17 @@ jobs:
         id: matrix
         with:
           script: |
-            return ['123', '456', '789']
+            console.log(context);
+            const result = await octokit.graphql(`{ 
+              organization(login:"${context.organization}") {
+                repositories(first:100) {
+                  nodes {
+                    name
+                  }
+                }
+              }
+            }`);
+            return ['123', '456', '789'];
     outputs:
       matrix: ${{ steps.matrix.outputs.result }}
   
