@@ -47,7 +47,7 @@ jobs:
           path: revision.patch
 
   sync:
-    name: Sync Repos
+    name: Sync Repository
     needs:
       - repo-arr
       - patch
