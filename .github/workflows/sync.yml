@@ -59,7 +59,7 @@ jobs:
       #     ${{ github.event.repository.name }} ${{ matrix.repo }}
       - name: Create Patch2
         working-directory: ${{ github.event.repository.name }}
-        run: echo $(pwd)
+        run: git diff
       - name: Create Patch
         working-directory: ${{ github.event.repository.name }}
         run: git format-patch HEAD~1 --stdout > ../revision.patch
