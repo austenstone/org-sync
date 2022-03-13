@@ -9,11 +9,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  repo-matrix:
+  repo-arr:
+    name: Create Repository Array
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v6
-        id: matrix
+        id: create-arr
         with:
           script: |
             const result = await github.graphql(`{ 
@@ -28,13 +29,14 @@ jobs:
             console.log(JSON.stringify(result, null, 2));
             return result.organization.repositories.nodes.map(repo => repo.name);
     outputs:
-      repos: ${{ steps.matrix.outputs.result }}
+      repos: ${{ steps.create-arr.outputs.result }}
   
-  repo-print:
-    needs: repo-matrix
+  sync:
+    name: Sync Repos
+    needs: repo-arr
     strategy:
       matrix:
-        repo: ${{ fromJson(needs.repo-matrix.outputs.repos) }}
+        repo: ${{ fromJson(needs.repo-arr.outputs.repos) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ${{ matrix.repo }} repo
