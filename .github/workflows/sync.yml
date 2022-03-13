@@ -17,8 +17,8 @@ jobs:
         with:
           script: |
             console.log(context);
-            const result = await octokit.graphql(`{ 
-              organization(login:"${context.organization}") {
+            const result = await github.graphql(`{ 
+              organization(login:"${context.organization.name}") {
                 repositories(first:100) {
                   nodes {
                     name
