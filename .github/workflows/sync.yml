@@ -49,7 +49,7 @@ jobs:
           repository: ${{ github.event.organization.login }}/${{ matrix.repo }}
           path: ${{ github.event.organization.login }}
       - run: ls -al
-      - run: rsync -avrc --delete --exclude=.github ${{ github.event.repository.name }} ${{ github.event.organization.login }}
+      - run: rsync -avrc --delete --exclude=.git* ${{ github.event.repository.name }} ${{ github.event.organization.login }}
       - run: git status
 
       
