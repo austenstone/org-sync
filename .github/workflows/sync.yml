@@ -58,6 +58,7 @@ jobs:
           for fileName in sync.yml README.md; do
             git reset HEAD -- $fileName
             git clean -f -q -- $fileName
+            echo "Rest $fileName successfull"
           done 
       - run: git diff-index --quiet HEAD || git commit -am "Organization sync"
       - run: git push
