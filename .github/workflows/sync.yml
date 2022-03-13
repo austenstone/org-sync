@@ -39,8 +39,12 @@ jobs:
         repo: ${{ fromJson(needs.repo-arr.outputs.repos) }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout ${{ github.event.repository.name }} repo
+        uses: actions/checkout@v3
       - name: Checkout ${{ matrix.repo }} repo
         uses: actions/checkout@v3
         with:
           repository: ${{ github.event.organization.login }}/${{ matrix.repo }}
           path: ${{ github.event.organization.login }}
+      - run: ls -al
+      
