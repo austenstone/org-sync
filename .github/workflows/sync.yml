@@ -57,5 +57,6 @@ jobs:
             git reset HEAD -- $fileName
             git clean -f -q -- $fileName
           done 
-      - run: git diff-index --quiet HEAD || git commit -am "Organization sync"
+      - run: git diff HEAD || git commit -am "Organization sync"
       - run: git push
+
