@@ -30,6 +30,7 @@ jobs:
             return result.organization.repositories.nodes
               .map(repo => repo.name)
               .filter(repo => repo !== context.payload.repository.name);
+          github-token: ${{ secrets.GH_TOKEN }}
     outputs:
       repos: ${{ steps.create-arr.outputs.result }}
   
