@@ -28,14 +28,17 @@ jobs:
             console.log(JSON.stringify(result, null, 2));
             return ['123', '456', '789'];
     outputs:
-      matrix: ${{ steps.matrix.outputs.result }}
+      repos: ${{ steps.matrix.outputs.result }}
   
   repo-print:
     needs: repo-matrix
     strategy:
       matrix:
-        repos: ${{ fromJson(needs.repo-matrix.outputs.matrix) }}
+        repo: ${{ fromJson(needs.repo-matrix.outputs.repos) }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'test'
-            
+      - name: Checkout ${{ matrix.repo }} repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.organization.login }}/${{ matrix.repo }}
+          path: ${{ github.event.organization.login }}
