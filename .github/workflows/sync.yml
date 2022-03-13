@@ -9,17 +9,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  sync:
+  repo-matrix:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Run GitHub File Sync
-        uses: BetaHuhn/repo-file-sync-action@v1
+      - uses: actions/github-script@v6
+        id: matrix
         with:
-          GH_PAT: ${{ secrets.GH_TOKEN }}
-          source: ./
-          exclude: |
-            .github/**
+          script: |
+            return ['123', '456', '789']
+        outputs:
+          matrix: ${{ steps.matrix.outputs.result }}
+  
+  repo-print:
+    needs: repo-matrix
+    strategy:
+      matrix:
+        repos: ${{ fromJson(needs.repo-matrix.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - run:
+        run: echo 'test'
             
