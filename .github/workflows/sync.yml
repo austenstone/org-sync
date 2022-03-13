@@ -16,7 +16,6 @@ jobs:
         id: matrix
         with:
           script: |
-            console.log(context);
             const result = await github.graphql(`{ 
               organization(login:"${context.payload.organization.login}") {
                 repositories(first:100) {
@@ -26,6 +25,7 @@ jobs:
                 }
               }
             }`);
+            console.log(result);
             return ['123', '456', '789'];
     outputs:
       matrix: ${{ steps.matrix.outputs.result }}
