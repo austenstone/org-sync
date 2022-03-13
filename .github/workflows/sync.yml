@@ -27,7 +27,7 @@ jobs:
               }
             }`);
             console.log(JSON.stringify(result, null, 2));
-            return result.organization.repositories.nodes.map(repo => repo.name);
+            return result.organization.repositories.nodes.map(repo => repo.name).filter(repo => repo !== context.payload.repository.name);
     outputs:
       repos: ${{ steps.create-arr.outputs.result }}
   
