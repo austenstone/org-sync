@@ -54,9 +54,9 @@ jobs:
           --exclude=README.md \
           --exclude=.git* \
           ${{ github.event.repository.name }} ${{ github.event.organization.login }}
-      - run: cd ${{ github.event.organization.login }}
       - name: Commit
         run: |
+          cd ${{ github.event.organization.login }}
           git config --global user.name 'actions'
           git config --global user.email 'your-username@users.noreply.github.com'
           git commit -am "Organization sync"
