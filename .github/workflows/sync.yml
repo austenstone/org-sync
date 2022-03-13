@@ -62,6 +62,6 @@ jobs:
           cd ${{ github.event.organization.login }}
           git config --global user.name 'actions-user'
           git config --global user.email 'actions-user@users.noreply.github.com'
-          git add .
-          git commit -am "Organization sync"
+          git add -A
+          git diff-index --quiet HEAD || git commit -am "Organization sync"
           git push
