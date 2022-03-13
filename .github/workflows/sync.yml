@@ -49,7 +49,15 @@ jobs:
           repository: ${{ github.event.organization.login }}/${{ matrix.repo }}
           path: ${{ github.event.organization.login }}
       - run: ls -al
-      - run: rsync -avrc --delete --exclude=.git* ${{ github.event.repository.name }} ${{ github.event.organization.login }}
-      - run: git status
-
-      
+      - run: |
+          rsync -avrc --delete \
+          --exclude=README.md \
+          --exclude=.git* \
+          ${{ github.event.repository.name }} ${{ github.event.organization.login }}
+      - run: cd ${{ github.event.organization.login }}
+      - name: Commit
+        run: |
+          git config --global user.name 'actions'
+          git config --global user.email 'your-username@users.noreply.github.com'
+          git commit -am "Organization sync"
+          git push
