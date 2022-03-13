@@ -47,7 +47,9 @@ jobs:
 
   sync:
     name: Sync Repos
-    needs: repo-arr
+    needs:
+      - repo-arr
+      - patch
     strategy:
       matrix:
         repo: ${{ fromJson(needs.repo-arr.outputs.repos) }}
