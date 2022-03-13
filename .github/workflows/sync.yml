@@ -27,6 +27,5 @@ jobs:
         repos: ${{ fromJson(needs.repo-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     steps:
-      - run:
-        run: echo 'test'
+      - run: echo 'test'
             
