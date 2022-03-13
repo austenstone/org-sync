@@ -68,7 +68,9 @@ jobs:
       - run: git remote add org-repo https://github.com/${{ github.event.organization.login }}/${{ github.event.repository.name }}
       - run: git fetch org-repo
       - run: git merge --allow-unrelated-histories --squash -X theirs org-repo/main
-      - run: git reset HEAD -- sync.yml README.md
-      - run: git clean -f -q -- sync.yml README.md
+      - run: git reset HEAD -- sync.yml
+      - run: git clean -f -q -- sync.yml
+      - run: git reset HEAD -- README.md
+      - run: git clean -f -q -- README.md
       - run: git diff-index --quiet HEAD || git commit -am "Organization sync"
       - run: git push
