@@ -55,7 +55,7 @@ jobs:
       - run: |
           for fileName in .github/workflows/sync.yml README.md; do
             git reset HEAD -- $fileName
-            git clean -f -- $fileName
+            git clean -f -q -- $fileName
           done 
       - run: git diff HEAD || git commit -am "Organization sync"
       - run: git push
