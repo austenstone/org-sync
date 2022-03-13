@@ -59,9 +59,9 @@ jobs:
 
       - name: Checkout ${{ github.event.repository.name }} repo
         uses: actions/checkout@v3
-        fetch-depth: 0
         with:
           path: ${{ github.event.repository.name }}
+          fetch-depth: 0
       - name: Checkout ${{ matrix.repo }} repo
         uses: actions/checkout@v3
         with:
