@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - run: git diff ${{ github.event.before }} ${{ github.event.after }} | tee revision.patch
+      - run: git diff --full-index ${{ github.event.before }} ${{ github.event.after }} | tee revision.patch
       - uses: actions/upload-artifact@v2
         with:
           name: patch
@@ -64,7 +64,8 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: patch
-      - run: git apply revision.patch
+      - run: git apply --check --verbose --summary revision.patch
+      - run: git apply --verbose revision.patch
       - run: |
           git config --global user.name 'actions-user'
           git config --global user.email 'actions-user@users.noreply.github.com'
