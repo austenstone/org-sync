@@ -73,9 +73,12 @@ jobs:
       #     --exclude=README.md \
       #     --exclude=.git* \
       #     ${{ github.event.repository.name }} ${{ matrix.repo }}
+      # - name: Create Patch
+      #   working-directory: ${{ github.event.repository.name }}
+      #   run: git show HEAD > ../revision.patch
       - name: Create Patch
         working-directory: ${{ github.event.repository.name }}
-        run: git show HEAD > ../revision.patch
+        run: git diff ${{ github.event.before }} ${{ github.event.after }} > ../revision.patch
       - name: Apply Patch
         working-directory: ${{ matrix.repo }}
         run: |
