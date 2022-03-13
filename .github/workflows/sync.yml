@@ -16,7 +16,7 @@ jobs:
         id: create-arr
         with:
           script: |
-            const result = await github.graphql(`{ 
+            return (await github.graphql(`{ 
               organization(login:"${context.payload.organization.login}") {
                 repositories(first:100) {
                   nodes {
@@ -24,9 +24,7 @@ jobs:
                   }
                 }
               }
-            }`);
-            console.log(JSON.stringify(result, null, 2));
-            return result.organization.repositories.nodes
+            }`)).organization.repositories.nodes
               .map(repo => repo.name)
               .filter(repo => repo !== context.payload.repository.name);
           github-token: ${{ secrets.GH_TOKEN }}
