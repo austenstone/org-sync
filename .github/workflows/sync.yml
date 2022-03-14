@@ -1,48 +1,31 @@
-name: Sync
+
+name: Sync Repositories
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  repo-arr:
-    name: Create Repository Array
+  get-org-repos:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
-        id: create-arr
-        with:
-          script: |
-            return (await github.graphql(`{ 
-              organization(login:"${context.payload.organization.login}") {
-                repositories(first:100) {
-                  nodes {
-                    name
-                  }
-                }
-              }
-            }`)).organization.repositories.nodes
-              .map(repo => repo.name)
-              .filter(repo => repo !== context.payload.repository.name);
-          github-token: ${{ secrets.GH_TOKEN }}
+      - uses: actions/checkout@v3
+      - uses: austenstone/get-org-repos@main
+        id: get-org-repos
     outputs:
-      repos: ${{ steps.create-arr.outputs.result }}
+      repos: ${{ steps.get-org-repos.outputs.repos }}
 
   sync:
-    name: Sync Repository
     needs:
-      - repo-arr
+      - get-org-repos
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        repo: ${{ fromJson(needs.repo-arr.outputs.repos) }}
+        repo: ${{ fromJson(needs.get-org-repos.outputs.repos) }}
       fail-fast: false
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository ${{ matrix.repo }}
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           repository: ${{ github.event.organization.login }}/${{ matrix.repo }}
           token: ${{ secrets.GH_TOKEN }}
@@ -51,7 +34,7 @@ jobs:
           git config --global user.email 'github-actions@users.noreply.github.com'
       - run: git remote add source https://github.com/${{ github.event.organization.login }}/${{ github.event.repository.name }}
       - run: git fetch source
-      - run: git merge --allow-unrelated-histories --squash -X theirs source/main
+      - run: git merge --allow-unrelated-histories --squash -X ours source/main
       - run: git remote remove source
       - run: |
           for fileName in .github/workflows/sync.yml README.md; do
@@ -60,4 +43,3 @@ jobs:
           done 
       - run: git diff-index --quiet HEAD || git commit -am "Organization sync"
       - run: git push
-
