@@ -32,6 +32,7 @@ jobs:
   sync:
     needs:
       - get-org-repos
+      - patch
     runs-on: ubuntu-latest
     strategy:
       matrix:
